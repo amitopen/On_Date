@@ -61,13 +61,15 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     private StorageTask uploadTask;
 
+    private Context mcontext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        final View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        mcontext=container.getContext();
         image_profile = view.findViewById(R.id.profile_image);
         username = view.findViewById(R.id.username);
 
@@ -84,7 +86,9 @@ public class ProfileFragment extends Fragment {
                 if (user.getImageURL().equals("default")){
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 }else {
-                    Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
+
+
+                    Glide.with(mcontext.getApplicationContext()).load(user.getImageURL()).into(image_profile);
                 }
             }
 
@@ -176,6 +180,11 @@ public class ProfileFragment extends Fragment {
             uploadImage();
         }
     }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
 

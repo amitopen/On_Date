@@ -4,13 +4,16 @@ public class User {
     private String id;
     private String username;
     private String imageURL;
+    //Check status online/ofline
+    private String status;
 
     public User(){ }
 
-    public User(String id, String username, String imageURL) {
+    public User(String id, String username, String imageURL,String status) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
+        this.status = status;
 
     }
 
@@ -36,5 +39,13 @@ public class User {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

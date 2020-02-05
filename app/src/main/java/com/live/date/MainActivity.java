@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.live.date.Fragment.ChatsFragment;
+import com.live.date.Fragment.ProfileFragment;
 import com.live.date.Fragment.UserFragment;
 import com.live.date.Model.User;
 
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new ChatsFragment(),"chats");
         viewPagerAdapter.addFragment(new UserFragment(),"users");
+        viewPagerAdapter.addFragment(new ProfileFragment(),"profile");
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 

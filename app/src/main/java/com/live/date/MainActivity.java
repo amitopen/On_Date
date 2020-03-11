@@ -8,10 +8,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.live.date.Fragment.ChatsFragment;
 import com.live.date.Fragment.ProfileFragment;
 import com.live.date.Fragment.UserFragment;
+import com.live.date.Model.Chat;
 import com.live.date.Model.User;
 
 import java.util.ArrayList;
@@ -43,10 +46,14 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseUser firebaseUser;
     DatabaseReference databaseReference;
+    ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                User user= dataSnapshot.getValue(User.class);
+                User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")){
+                if (user.getImageURL().equals("default")) {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
-                }else {
+                } else {
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
             }
@@ -76,15 +83,45 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        ViewPager viewPager = findViewById(R.id.view_pager);
+         final TabLayout tabLayout = findViewById(R.id.tab_layout);
+         final ViewPager viewPager = findViewById(R.id.view_pager);
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new ChatsFragment(),"chats");
-        viewPagerAdapter.addFragment(new UserFragment(),"users");
-        viewPagerAdapter.addFragment(new ProfileFragment(),"profile");
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        databaseReference = FirebaseDatabase.getInstance().getReference("Chats");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                int unread = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()){
+                        unread++;
+                    }
+                }
+
+                if (unread == 0){
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+                } else {
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "("+unread+") Chats");
+                }
+
+                viewPagerAdapter.addFragment(new UserFragment(), "Users");
+                viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
+
+                viewPager.setAdapter(viewPagerAdapter);
+
+                tabLayout.setupWithViewPager(viewPager);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
     }
 
@@ -96,29 +133,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
                 //change this code or app will crash
-                startActivity(new Intent(MainActivity.this,StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
                 return true;
         }
         return true;
 
     }
+
     class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;
 
-        ViewPagerAdapter(FragmentManager fm){
+        ViewPagerAdapter(FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             this.fragments = new ArrayList<>();
             this.titles = new ArrayList<>();
 
 
         }
+
         @NonNull
         @Override
         public Fragment getItem(int position) {
@@ -130,12 +169,12 @@ public class MainActivity extends AppCompatActivity {
             return fragments.size();
         }
 
-    public void addFragment(Fragment fragment,String title){
+        public void addFragment(Fragment fragment, String title) {
 
             fragments.add(fragment);
             titles.add(title);
-    }
-    //ctrl + o
+        }
+        //ctrl + o
 
         @Nullable
         @Override
@@ -145,10 +184,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void status (String status){
+    private void status(String status) {
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status",status);
+        hashMap.put("status", status);
         databaseReference.updateChildren(hashMap);
 
     }
@@ -164,5 +203,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         status("offline");
     }
+
 
 }

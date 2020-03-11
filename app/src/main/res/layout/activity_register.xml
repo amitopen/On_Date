@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/p2"
     tools:context=".RegisterActivity">
 
     <include
@@ -17,20 +18,13 @@
         android:orientation="vertical"
         android:layout_below="@+id/toolbar"
         android:padding="16dp" >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create a new user"
-            android:textColor="@color/colorskyblue"
-            android:layout_marginTop="30dp"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/username"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="200dp"
             app:met_floatingLabel="normal"
             android:hint="User name"/>
 

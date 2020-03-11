@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/p2"
     tools:context=".LoginActivity">
 
     <include
@@ -17,21 +18,15 @@
         android:orientation="vertical"
         android:layout_below="@+id/toolbar"
         android:padding="16dp" >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login Window"
-            android:textColor="@color/colorskyblue"
-            android:layout_marginTop="30dp"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/emailLogin"
+            android:textColorHint="@color/md_green_900"
             android:inputType="textEmailAddress"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="200dp"
             app:met_floatingLabel="normal"
             android:hint="Email"/>
 
@@ -40,21 +35,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/passwordLogin"
+            android:textColorHint="@color/md_green_900"
             android:inputType="textPassword"
             android:layout_marginTop="20dp"
             app:met_floatingLabel="normal"
             android:hint="Password"/>
 
         <Button
+            android:id="@+id/login_btn"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/colorPrimary"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="Login"
+            android:textSize="20sp"
+            android:textColor="@color/colorBtnText"
+            android:textStyle="bold" />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/login_btn"
-            android:background="@color/colorPrimary"
-            android:text="Login"
-            android:textColor="@color/colorBtnText"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
-            android:layout_marginTop="50dp"/>
+            android:text="forgot password ?"
+            android:id="@+id/forgot_password"
+            android:textColor="@color/md_blue_900"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/googleLoginButton"/>
+
     </LinearLayout>
 
 
